@@ -1,7 +1,10 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import PrismicClient from '../api/prismic-client'
+import Prismic from 'prismic-javascript'
 
-export default function Home() {
+export default function Home({ data }) {
+  console.log(data)
   return (
     <div className={styles.container}>
       <Head>
@@ -62,4 +65,14 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+Home.getInitialProps = async () => {
+  const data = await PrismicClient.query(
+    Prismic.Predicates.at('document.type', 'job_offer'),
+    { fetchLinks : [ 'company.name', 'company.logo' ] }
+  )
+  return {
+    data
+  }
 }
