@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import Axios from 'axios'
 
 export default function Home({ data }) {
   console.log(data)
@@ -66,8 +67,10 @@ export default function Home({ data }) {
 }
 
 Home.getInitialProps = async () => {
-  const data = { test: 'test' }
+  const res = await Axios.get('https://recipe-express-api.herokuapp.com/get-recipes')
+
+
   return {
-    data
+    data: res.data
   }
 }
