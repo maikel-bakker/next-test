@@ -1,7 +1,5 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import PrismicClient from '../api/prismic-client'
-import Prismic from 'prismic-javascript'
 
 export default function Home({ data }) {
   console.log(data)
@@ -68,10 +66,7 @@ export default function Home({ data }) {
 }
 
 Home.getInitialProps = async () => {
-  const data = await PrismicClient.query(
-    Prismic.Predicates.at('document.type', 'job_offer'),
-    { fetchLinks : [ 'company.name', 'company.logo' ] }
-  )
+  const data = { test: 'test' }
   return {
     data
   }
