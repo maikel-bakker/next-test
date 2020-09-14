@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "lodash-humps": "^3.1.5",
     "next": "9.4.4",
     "prismic-dom": "^2.2.3",
     "prismic-javascript": "^3.0.1",

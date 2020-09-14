@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Axios from 'axios'
 import Prismic from 'prismic-javascript'
+import humps from 'lodash-humps'
 
 export default function Home({ data }) {
   console.log(data)
@@ -67,13 +68,74 @@ export default function Home({ data }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getStaticProps () {
   const client = Prismic.client(process.env.NEXT_PUBLIC_PRISMIC_API_URL)
-  const data = await client.query(
-    Prismic.Predicates.at('document.type', 'job_offer'),
-    { fetchLinks : [ 'company.name', 'company.logo' ] }
+  const response = await client.getByUID('page', 'home',
+    {
+      graphQuery: `
+        {
+          page {
+            content_blocks {
+              content_block {
+                ... on page_header {
+                  ...page_headerFields
+                }
+                ... on section {
+                  ...sectionFields
+                }
+                ... on section_list {
+                  ...section_listFields
+                }
+              }
+            }
+          }
+        }
+      `
+    }
   )
-  // const { data } = await Axios.get('https://recipe-express-api.herokuapp.com/get-recipes')
+
+  let contentBlocks = response.data.content_blocks && response.data.content_blocks.map(async ({ content_block }) => {
+    if (content_block?.data?.form) {
+      return {
+        ...content_block,
+        data: {
+          ...content_block.data,
+          form: {
+            ...content_block.data.form,
+            ... await client.getByID(content_block.data.form.id, {
+              graphQuery: `
+              {
+                form {
+                  submit_label
+                  form_rows {
+                    form_row {
+                      ... on form_row {
+                        ...form_rowFields
+                      }
+                    }
+                  }
+                }
+              }
+            `
+            })
+          }
+        }
+      }
+    }
+
+    return content_block
+
+  })
+
+  contentBlocks = await Promise.all(contentBlocks)
+
+  const data = humps({
+    ...response,
+    data: {
+      ...response.data,
+      content_blocks: contentBlocks
+    }
+  })
 
   return {
     props: { data }
