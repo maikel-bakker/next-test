@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Axios from 'axios'
+import Prismic from 'prismic-javascript'
 
 export default function Home({ data }) {
   console.log(data)
@@ -67,7 +68,12 @@ export default function Home({ data }) {
 }
 
 export async function getStaticProps() {
-  const { data } = await Axios.get('https://recipe-express-api.herokuapp.com/get-recipes')
+  const client = Prismic.client(process.env.NEXT_PUBLIC_PRISMIC_API_URL)
+  const data = await client.query(
+    Prismic.Predicates.at('document.type', 'job_offer'),
+    { fetchLinks : [ 'company.name', 'company.logo' ] }
+  )
+  // const { data } = await Axios.get('https://recipe-express-api.herokuapp.com/get-recipes')
 
   return {
     props: { data }
