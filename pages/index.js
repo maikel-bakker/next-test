@@ -66,11 +66,10 @@ export default function Home({ data }) {
   )
 }
 
-Home.getInitialProps = async () => {
-  const res = await Axios.get('https://recipe-express-api.herokuapp.com/get-recipes')
-
+export async function getStaticProps() {
+  const { data } = await Axios.get('https://recipe-express-api.herokuapp.com/get-recipes')
 
   return {
-    data: res.data
+    props: { data }
   }
 }
