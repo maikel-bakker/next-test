@@ -1,15 +1,19 @@
 {
-  "name": "next-test",
+  "name": "sustainable-jobs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next build && next export"
   },
   "dependencies": {
-    "next": "9.5.3",
+    "next": "9.4.4",
+    "prismic-dom": "^2.2.3",
+    "prismic-javascript": "^3.0.1",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "styled-components": "^5.1.1"
   }
 }
